@@ -41,7 +41,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
     // { label: 'Winter',   },
     // { label: 'Spring',   },>
   ];
-
+  // console.log('menuItems:')
+  const project =import.meta.env.VITE_SUPABASE_PROJECT_NAME
+  const key = import.meta.env.VITE_SUPABASE_API_KEY
+    console.log('Project:', project);
+  console.log('Key:', key);
   return (
     <Box sx={{ display: 'flex', marginTop: '55px' }}>
       <CssBaseline />

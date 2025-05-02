@@ -12,7 +12,12 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Logo from '../assets/Logo.png';
+// import { supabase } from '../Utils/SupbaseConfig.js';
 
+// const project =import.meta.env.VITE_SUPABASE_PROJECT_NAME
+// const key = import.meta.env.VITE_SUPABASE_API_KEY
+// console.log('Project:', project);
+// console.log('Key:', key);
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -55,7 +60,11 @@ const Header: React.FC = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
+//   const project =import.meta.env.VITE_SUPABASE_PROJECT_NAME
+// const key = import.meta.env.VITE_SUPABASE_API_KEY
+//   console.log('Project:', project);
+// console.log('Key:', key);
+// supabase();
   return (
     <Box sx={{ flexGrow: 1, position: 'fixed', width: '100%', zIndex: 1000 }}>
       <AppBar
