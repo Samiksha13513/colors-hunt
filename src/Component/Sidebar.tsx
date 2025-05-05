@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -26,26 +25,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
     { label: 'Popular', icon: <WhatshotIcon /> },
     { label: 'Random', icon: <AllInclusiveIcon /> },
     { label: 'Collection', icon: <FavoriteBorderIcon /> },
-   
-   // { label: 'Pastel',  },
-    // { label: 'Vintage'},
-    // { label: 'Retro',  },
-    // { label: 'Neon',  },
-    // { label: 'Gold',   },
-    // { label: 'Light',   },
-    // { label: 'Dark',   },
-    // { label: 'Warm',  },
-    // { label: 'Cold',  },
-    // { label: 'Summer',  },
-    // { label: 'Fall',  },
-    // { label: 'Winter',   },
-    // { label: 'Spring',   },>
   ];
-  // console.log('menuItems:')
-  const project =import.meta.env.VITE_SUPABASE_PROJECT_NAME
-  const key = import.meta.env.VITE_SUPABASE_API_KEY
-    console.log('Project:', project);
-  console.log('Key:', key);
+ 
   return (
     <Box sx={{ display: 'flex', marginTop: '55px' }}>
       <CssBaseline />
