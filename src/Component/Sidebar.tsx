@@ -1,3 +1,4 @@
+// add a small vertical line sidebar menu and add more sidebar items from mui and set like a colors hunt website sidebar 
 import React from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -25,6 +26,25 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
     { label: 'Popular', icon: <WhatshotIcon /> },
     { label: 'Random', icon: <AllInclusiveIcon /> },
     { label: 'Collection', icon: <FavoriteBorderIcon /> },
+    { label: 'Pastel',},
+    { label: 'Vintage', },
+    { label: 'Retro', },
+    { label: 'Neon',  },
+    { label: 'Gold', },
+    { label: 'Light', },
+    { label: 'Dark', },
+    { label: 'Warm',  },
+    { label: 'Cold',  }, 
+    { label: 'Summer', },
+    { label: 'Fall', },
+    { label: 'Winter',  },
+    { label: 'Spring', },
+    { label: 'Random',  },
+    { label: 'Happy', },
+     { label: 'New',  },
+    { label: 'Popular', },
+    { label: 'Random', },
+    { label: 'Collection', },
   ];
  
   return (

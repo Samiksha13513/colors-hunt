@@ -13,6 +13,22 @@ const App: React.FC = () => {
       <Sidebar onMenuClick={(menu) => setSelectedMenu(menu)} />
       <Box sx={{ flexGrow: 1, paddingTop: '50px' }}>
         {selectedMenu === 'New' && <BoxComponent />}
+
+
+
+
+
+        {selectedMenu === 'Popular' && <BoxComponent />}
+
+        {selectedMenu === 'Random' && <BoxComponent />}
+        {selectedMenu === 'Collection' && <BoxComponent />}
+        {selectedMenu === 'Pastel' && <BoxComponent />}
+        {selectedMenu === 'Palettes' && <BoxComponent />}
+
+
+
+
+
       </Box>
     </Box>
   );
