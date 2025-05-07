@@ -1,4 +1,4 @@
-// add a small vertical line sidebar menu and add more sidebar items from mui and set like a colors hunt website sidebar 
+
 import React from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,7 +13,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import WhatshotIcon from '@mui/icons-material/Whatshot';       
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive'; 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
+// import Divider from '@mui/material/Divider';
 const drawerWidth = 175;
 
 interface SidebarProps {
