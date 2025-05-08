@@ -67,8 +67,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
       >
         <Box sx={{ overflowY: 'auto' }}>
           <List>
-            {menuItems.map((item) => (
-              <ListItem key={item.label} disablePadding onClick={() => onMenuClick(item.label)}>
+            {menuItems.map((item,index) => (
+              <ListItem key={index} disablePadding onClick={() => onMenuClick(item.label)}>
                 <ListItemButton>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.label} />

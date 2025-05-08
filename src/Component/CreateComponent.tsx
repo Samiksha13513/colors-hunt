@@ -1,23 +1,20 @@
+
 import React, { useState, useRef } from 'react';
 import { ChromePicker } from 'react-color';
 import { Box, Button, styled } from '@mui/material';
+import { supabase } from '../SupabaseConfig';
 
-interface ColorBoxProps {
-  initialColor?: string[];
-  onColorChange?: (color: string, sectionIndex: number) => void;
+interface CreatePaletteProps {
+  onPaletteAdded?: () => void; 
 }
 
-const ColorSection = styled(Box)(({ theme, backgroundColor }) => ({
+const ColorSection = styled(Box)(({ theme, backgroundColor }: any) => ({
   width: '100%',
   backgroundColor,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderBottom: '1px solid',
-  marginTop:'auto',
-  ...(backgroundColor !== undefined && {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  }),
+  borderBottom: `1px solid ${theme.palette.divider}`,
   '&:last-child': {
     borderBottom: 'none',
   },
@@ -36,13 +33,15 @@ const StyledColorBox = styled(Box)({
   marginTop: '20px',
 });
 
-const SingleColorBox: React.FC<ColorBoxProps> = ({
-  initialColor = ['#BBBBBB', '#CCCCCC', '#DDDDDD', '#EEEEEE'],
-  onColorChange,
-}) => {
+const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [activeSectionIndex, setActiveSectionIndex] = useState<number | null>(null);
-  const [sectionColors, setSectionColors] = useState(initialColor);
+  const [sectionColors, setSectionColors] = useState([
+    '#BBBBBB',
+    '#CCCCCC',
+    '#DDDDDD',
+    '#EEEEEE',
+  ]);
   const boxRef = useRef<HTMLDivElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -69,64 +68,73 @@ const SingleColorBox: React.FC<ColorBoxProps> = ({
     setDisplayColorPicker(false);
     setActiveSectionIndex(null);
   };
+   
+ 
 
   const handleChange = (newColor: { hex: string }) => {
     if (activeSectionIndex !== null) {
       const updatedColors = [...sectionColors];
       updatedColors[activeSectionIndex] = newColor.hex;
       setSectionColors(updatedColors);
-      if (onColorChange) {
-        onColorChange(newColor.hex, activeSectionIndex);
-      }
     }
   };
 
-  const popover = {
-    position: 'absolute',
-  };
+  const handleSubmit = async () => {
+    if (sectionColors.length !== 4) {
+      alert('Please select exactly 4 colors.');
+      return;
+    }
+    
+    const { data, error } = await supabase
+      .from('color_palettes')
+      .insert([
+        { colors: sectionColors, },
+      ]);
 
-  const cover = {
-    position: 'fixed',
-    top: '0px',
-    right: '0px',
-    bottom: '0px',
-    left: '0px',
+    if (error) {
+      console.error('Error saving palette:', error);
+      alert('Failed to save. Check console for details.');
+    } else {
+      alert('Palette saved!');
+      if (onPaletteAdded) onPaletteAdded(); 
+    }
   };
 
   return (
     <Box sx={{ margin: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <h2>Create Your Palette</h2>
+      <p>Click on a section to change its color</p>
       <StyledColorBox ref={boxRef} onClick={handleClick}>
         <ColorSection sx={{ height: '40%' }} backgroundColor={sectionColors[0]} />
         <ColorSection sx={{ height: '30%' }} backgroundColor={sectionColors[1]} />
         <ColorSection sx={{ height: '20%' }} backgroundColor={sectionColors[2]} />
-        <ColorSection sx={{ height: '20%', borderBottom: 'none' }} backgroundColor={sectionColors[3]} />
+        <ColorSection sx={{ height: '10%' }} backgroundColor={sectionColors[3]} />
       </StyledColorBox>
-      {displayColorPicker ? (
-        <Box sx={popover}>
-          <Box sx={cover} onClick={handleClose} />
+
+      {displayColorPicker && (
+        <Box sx={{ position: 'absolute' }}>
+          <Box
+            sx={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            }}
+            onClick={handleClose}
+          />
           <ChromePicker
             color={sectionColors[activeSectionIndex !== null ? activeSectionIndex : 0]}
             onChange={handleChange}
           />
         </Box>
-      
-      ) : null}
+      )}
+
+      <Button variant="contained" color="#EEEEEE" onClick={handleSubmit} sx={{ marginTop: 2 }}>
+        Add to Collection
+      </Button>
     </Box>
   );
 };
 
-const App: React.FC = () => {
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Box sx={{ marginLeft: 'auto', marginRight: 'auto', mt: 3 }}>
-        <h4>New Color Palette</h4>
-      </Box>
-      <Box sx={{ marginLeft: 'auto', marginRight: 'auto', mt: 1, mb: 2 }}>
-        <h6>Create a new palette and contribute to Color Hunt’s collection</h6>
-      </Box>
-      <SingleColorBox />
-    </Box>
-  );
-};
-
-export default App;
+export default CreatePalette;

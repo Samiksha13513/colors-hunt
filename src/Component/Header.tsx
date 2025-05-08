@@ -101,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu }) => {
             >
               <MenuItem onClick={() => handleMenuItemClick('Palettes')}>Palettes</MenuItem>
               <MenuItem onClick={() => handleMenuItemClick('Create')}>Create</MenuItem>
-              <MenuItem onClick={() => handleMenuItemClick('Collection')}>Collection</MenuItem>t 
+              <MenuItem onClick={() => handleMenuItemClick('Collection')}>Collection</MenuItem>
               <MenuItem onClick={handleMenuClose}>About</MenuItem>
               <MenuItem onClick={handleMenuClose}>Instagram</MenuItem>
               <MenuItem onClick={handleMenuClose}>Terms of Service</MenuItem>
