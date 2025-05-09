@@ -1,30 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Tooltip, Typography, Skeleton } from "@mui/material";
+import {
+  Box,
+  Button,
+  Tooltip,
+  Typography,
+  Skeleton,
+} from "@mui/material";
 import { supabase } from "../SupabaseConfig";
 
 const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
   refreshTrigger,
 }) => {
   const [palettes, setPalettes] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // <-- Add loading state
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchPalettes = async () => {
-    const { data, error } = await supabase.from("color_palettes").select("*");
+    setLoading(true); // Start loading
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const { data, error } = await supabase
+      .from("color_palettes")
+      .select("*")
+      .gte("created_at", today.toISOString())
+      .lt("created_at", tomorrow.toISOString());
 
     if (error) {
       console.error("Error fetching palettes:", error);
     } else {
-      // Simulate 4-second loading delay
-      setTimeout(() => {
-        setPalettes(data || []);
-        setLoading(false); // Stop loading after 4 seconds
-      }, 2000);
+      setPalettes(data || []);
     }
+
+    setLoading(false); 
   };
 
   useEffect(() => {
     fetchPalettes();
   }, [refreshTrigger]);
+  
 
   const handleSubmit = async (selectedPalette: any) => {
     const formattedData = {
@@ -67,7 +83,7 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
               }}
             >
               <Box sx={{ borderRadius: 4, overflow: "hidden" }}>
-                {palette.colors.map((color: any, idx: any) => (
+                {palette.colors.map((color: string, idx: number) => (
                   <Tooltip title={color} arrow key={idx}>
                     <Box
                       sx={{
