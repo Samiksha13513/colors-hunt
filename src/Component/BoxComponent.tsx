@@ -1,13 +1,16 @@
+// BoxComponent.tsx
 import React, { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Typography,
+  Tooltip,
+  Skeleton,
+} from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import Tooltip from '@mui/material/Tooltip';
-import Skeleton from '@mui/material/Skeleton';
-import { createClient } from '@supabase/supabase-js';
 import { useParams } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
 
 const generateColor = (type: string): string => {
   if (type === 'pastel') {
@@ -19,7 +22,6 @@ const generateColor = (type: string): string => {
     const hue = vintageHues[Math.floor(Math.random() * vintageHues.length)];
     return `hsl(${hue}, 30%, 60%)`;
   }
-  
   return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
 };
 
@@ -40,7 +42,11 @@ const formatTimeAgo = (timestamp: string) => {
   }
 };
 
-const BoxComponent: React.FC = () => {
+interface BoxComponentProps {
+  onLike: () => void;
+}
+
+const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
   const [palettes, setPalettes] = useState<any[]>([]);
   const [liked, setLiked] = useState<{ [key: number]: boolean }>({});
   const [loading, setLoading] = useState<boolean>(true);
@@ -53,7 +59,6 @@ const BoxComponent: React.FC = () => {
   useEffect(() => {
     const fetchColors = async () => {
       if (colorname === 'pastel' || colorname === 'vintage' || colorname === 'random') {
-        // Simulate generated data
         const randomData = Array.from({ length: 8 }, () => ({
           id: Math.random().toString(36).substring(2),
           colors: Array.from({ length: 4 }, () => generateColor(colorname)),
@@ -104,6 +109,8 @@ const BoxComponent: React.FC = () => {
       )
     );
     setLiked(prev => ({ ...prev, [index]: !prev[index] }));
+
+    onLike(); // Trigger tongue shake
   };
 
   return (

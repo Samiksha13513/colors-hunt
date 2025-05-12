@@ -8,14 +8,20 @@ import {
 } from "@mui/material";
 import { supabase } from "../SupabaseConfig";
 
-const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
+interface NewComponentProps {
+  refreshTrigger: number;
+  onLike?: () => void;
+}
+
+const NewComponent: React.FC<NewComponentProps> = ({
   refreshTrigger,
+  onLike,
 }) => {
   const [palettes, setPalettes] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchPalettes = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -34,13 +40,12 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
       setPalettes(data || []);
     }
 
-    setLoading(false); 
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchPalettes();
   }, [refreshTrigger]);
-  
 
   const handleSubmit = async (selectedPalette: any) => {
     const formattedData = {
@@ -50,7 +55,7 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
       color4: selectedPalette.colors[3],
     };
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("color")
       .insert([{ colors: formattedData }]);
 
@@ -59,6 +64,7 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
       alert("Failed to save. Check console for details.");
     } else {
       alert("Palette saved!");
+      onLike?.(); // ✅ Trigger tongue animation
     }
   };
 
@@ -107,7 +113,7 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
                 <Typography variant="caption" color="text.secondary">
                   {formatTimeAgo(palette.created_at)}
                 </Typography>
-                {/* <Button
+                <Button
                   onClick={() => handleSubmit(palette)}
                   variant="outlined"
                   size="small"
@@ -119,7 +125,7 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
                   }}
                 >
                   Publish
-                </Button> */}
+                </Button>
               </Box>
             </Box>
           ))}
@@ -144,4 +150,4 @@ const formatTimeAgo = (timestamp: string) => {
   }
 };
 
-export default CollectionComponent;
+export default NewComponent;

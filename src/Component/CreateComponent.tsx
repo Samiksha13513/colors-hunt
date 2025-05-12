@@ -1,125 +1,71 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { ChromePicker } from 'react-color';
 import {
   Box,
   Button,
   styled,
-  InputBase,
-  Paper,
-  IconButton,
   Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import { supabase } from '../SupabaseConfig';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+import TagSelector from '../Component/TagSelector'; 
+
 interface CreatePaletteProps {
   onPaletteAdded?: () => void;
 }
-const ColorSection = styled(Box)(({ theme, backgroundColor }: any) => ({
-  width: '100%',
-  backgroundColor,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  '&:last-child': {
-    borderBottom: 'none',
-  },
-}));
-const StyledColorBox = styled(Box)({
-  width: '290px',
-  height: '299px',
+
+const StyledPaletteCard = styled(Box)({
+  width: 400,
+  height: 400,
   display: 'flex',
   flexDirection: 'column',
+  overflow: 'hidden',
+  borderRadius: '12px',
+  boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
   cursor: 'pointer',
-  border: '2px solid black',
-  borderRadius: '8px',
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  marginTop: '20px',
+  transition: '0.2s ease',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+  },
 });
-const Tag = styled(Box)(({ color }: { color: string }) => ({
-  backgroundColor: '#fff',
-  border: `2px solid ${color}`,
-  borderRadius: '16px',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '4px 8px',
-  margin: '4px',
-  boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-}));
-const ColorDot = styled(Box)(({ color }: { color: string }) => ({
-  width: 12,
-  height: 12,
-  borderRadius: '50%',
-  backgroundColor: color,
-  marginRight: 8,
-}));
-const getColorName = (hex: string) => {
-  const names: { [key: string]: string } = {
-    '#000000': 'Black',
-    '#ffffff': 'White',
-    '#ff0000': 'Red',
-    '#00ff00': 'Lime',
-    '#0000ff': 'Blue',
-    '#ffff00': 'Yellow',
-    '#00ffff': 'Cyan',
-    '#ff00ff': 'Magenta',
-    '#c0c0c0': 'Silver',
-    '#808080': 'Gray',
-    '#800000': 'Maroon',
-    '#808000': 'Olive',
-    '#008000': 'Green',
-    '#800080': 'Purple',
-    '#008080': 'Teal',
-    '#000080': 'Navy',
-  };
-  const hexUpper = hex.toUpperCase();
-  return names[hexUpper] || hexUpper;
-};
+
 const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
-  const [activeSectionIndex, setActiveSectionIndex] = useState<number | null>(null);
-  const [sectionColors, setSectionColors] = useState([
-    '#bbbbbb',
-    '#cccccc',
-    '#dddddd',
-    '#eeeeee',
-  ]);
-  const [search, setSearch] = useState('');
-  const boxRef = useRef<HTMLDivElement>(null);
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const rect = boxRef.current?.getBoundingClientRect();
-    if (rect) {
-      const y = event.clientY - rect.top;
-      const height = rect.height;
-      let clickedIndex = -1;
-      if (y < height * 0.4) clickedIndex = 0;
-      else if (y < height * 0.6) clickedIndex = 1;
-      else if (y < height * 0.8) clickedIndex = 2;
-      else clickedIndex = 3;
-      setActiveSectionIndex(clickedIndex);
-      setDisplayColorPicker(true);
-    }
+  const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
+  const [sectionColors, setSectionColors] = useState(['#bbbbbb', '#cccccc', '#dddddd', '#eeeeee']);
+  const [hasPickedColor, setHasPickedColor] = useState(false); // ✅ New state to track user action
+
+  const handleClick = (index: number) => {
+    setActiveColorIndex(index);
+    setDisplayColorPicker(true);
   };
+
   const handleClose = () => {
     setDisplayColorPicker(false);
-    setActiveSectionIndex(null);
+    setActiveColorIndex(null);
   };
+
   const handleChange = (newColor: { hex: string }) => {
-    if (activeSectionIndex !== null) {
+    if (activeColorIndex !== null) {
       const updatedColors = [...sectionColors];
-      updatedColors[activeSectionIndex] = newColor.hex;
+      updatedColors[activeColorIndex] = newColor.hex;
       setSectionColors(updatedColors);
+      setHasPickedColor(true); 
     }
   };
+
   const handleSubmit = async () => {
     if (sectionColors.length !== 4) {
       alert('Please select exactly 4 colors.');
       return;
     }
-    const { data, error } = await supabase
+
+    const { error } = await supabase
       .from('color_palettes')
       .insert([{ colors: sectionColors }]);
+
     if (error) {
       console.error('Error saving palette:', error);
       alert('Failed to save. Check console for details.');
@@ -128,17 +74,42 @@ const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
       if (onPaletteAdded) onPaletteAdded();
     }
   };
+
   return (
     <Box sx={{ margin: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography variant="h5">Create Your Palette</Typography>
-      <Typography variant="body2">Click on a section to change its color</Typography>
-      <StyledColorBox ref={boxRef} onClick={handleClick}>
-        <ColorSection sx={{ height: '40%' }} backgroundColor={sectionColors[0]} />
-        <ColorSection sx={{ height: '30%' }} backgroundColor={sectionColors[1]} />
-        <ColorSection sx={{ height: '20%' }} backgroundColor={sectionColors[2]} />
-        <ColorSection sx={{ height: '10%' }} backgroundColor={sectionColors[3]} />
-      </StyledColorBox>
-      {displayColorPicker && (
+    <Typography 
+  variant="h1" 
+  sx={{ 
+    mb: 1,  
+    fontSize: '18px',
+    fontWeight: 'bold',
+    fontFamily: 'Inter, sans-serif',
+    margin: 0,
+    lineHeight: '140%' 
+  }}
+>
+  New Color Palette
+</Typography>
+
+      <Typography variant="body2" sx={{ mb: 3 }}>Create a new palette and contribute to Color Hunt’s collection</Typography>
+
+      <StyledPaletteCard>
+        {sectionColors.map((color, index) => (
+          <Box
+            key={index}
+            sx={{
+              flex: 1,
+              width: '100%',
+              backgroundColor: color,
+              cursor: 'pointer',
+            }}
+            onClick={() => handleClick(index)}
+            title={`Click to change ${color}`}
+          />
+        ))}
+      </StyledPaletteCard>
+
+      {displayColorPicker && activeColorIndex !== null && (
         <Box sx={{ position: 'absolute', zIndex: 10 }}>
           <Box
             sx={{
@@ -151,99 +122,41 @@ const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
             onClick={handleClose}
           />
           <ChromePicker
-            color={sectionColors[activeSectionIndex ?? 0]}
+            color={sectionColors[activeColorIndex]}
             onChange={handleChange}
           />
         </Box>
       )}
-      <Paper
-        component="form"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: 320,
-          padding: '2px 8px',
-          mb: 3,
-          backgroundColor: '#f5f5f5',
-          marginTop: 5,
-        }}
-        elevation={1}
-      >
-        <IconButton sx={{ p: '6px' }} aria-label="search">
-          <SearchIcon />
-        </IconButton>
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          placeholder="Search for palettes..."
-          inputProps={{ 'aria-label': 'search for palettes' }}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </Paper>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>Colors</Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        {sectionColors.map((color, idx) => (
-          <Tag
-            key={idx}
-            color={color}
-            onClick={() =>
-              setSearch(prev => (prev ? `${prev}, ${getColorName(color)}` : getColorName(color)))
-            }
-            sx={{ cursor: 'pointer' }}
-          >
-            <ColorDot color={color} />
-            <Typography variant="caption">{getColorName(color)}</Typography>
-          </Tag>
-        ))}
+
+      <Box sx={{ mt: 5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <TagSelector placeholder='Add Tags' width='480px'/>
       </Box>
-      <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>Collection</Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        {['Nature', 'Ocean', 'Sunset', 'Ocean', 'Pastel', 'Peach', 'Cream', 'Grey'].map((label, i) => (
-          <Tag
-            key={i}
-            color="#ddd"
-            onClick={() =>
-              setSearch(prev => (prev ? `${prev}, ${label}` : label))
-            }
-            sx={{ cursor: 'pointer' }}
-          >
-            <Typography variant="caption">{label}</Typography>
-          </Tag>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          marginTop: 3,
-          maxWidth: 320,
-        }}
-      >
-        {sectionColors.map((color, idx) => (
-          <Tag key={idx} color={color}>
-            <ColorDot color={color} />
-            <Typography variant="caption">{getColorName(color)}</Typography>
-          </Tag>
-        ))}
-      </Box>
+
+      {hasPickedColor && (
       <Button
-        variant="contained"
-        onClick={handleSubmit}
-        sx={{ marginTop: 3, backgroundColor: '#000', color: '#fff' }}
-      >
-        Add to Collection
-      </Button>
+      variant="outlined"
+      onClick={handleSubmit}
+      startIcon={<ArrowForwardIcon />}
+      sx={{
+        marginTop: 3,
+        borderRadius: '8px',
+        backgroundColor: 'transparent',
+        color: '#797a7a',
+        borderColor: '#ccc', 
+        px: 4 ,
+        py: 1.5,
+        fontWeight: 'bold',
+        '&:hover': {
+          borderColor: '#bbb',
+          color: '#bbb',
+        },
+      }}
+    >
+      Submit Palette
+    </Button>
+      )}
     </Box>
   );
 };
+
 export default CreatePalette;
-
-
-
-
-
-
-
-
-
