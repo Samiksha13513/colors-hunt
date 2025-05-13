@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Tooltip, Typography, Skeleton } from "@mui/material";
+import { Box, Tooltip, Typography, Skeleton } from "@mui/material";
 import { supabase } from "../SupabaseConfig";
 
 const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
@@ -26,7 +26,7 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
     fetchPalettes();
   }, [refreshTrigger]);
 
-  const handleSubmit = async (selectedPalette: any) => {
+ async (selectedPalette: any) => {
     const formattedData = {
       color1: selectedPalette.colors[0],
       color2: selectedPalette.colors[1],
@@ -34,7 +34,7 @@ const CollectionComponent: React.FC<{ refreshTrigger: number }> = ({
       color4: selectedPalette.colors[3],
     };
 
-    const { data, error } = await supabase
+    const {  error } = await supabase
       .from("color")
       .insert([{ colors: formattedData }]);
 

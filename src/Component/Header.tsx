@@ -3,7 +3,7 @@ import {
   AppBar,
   Box,
   Toolbar,
-  styled,
+ 
   IconButton,
   Menu,
   MenuItem,
@@ -91,6 +91,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
                 fontWeight: 600,
                 fontSize: '1.2rem',
                 color: '#333',
+                width: '102px',
               }}
               className="mobileHide"
             >
@@ -121,11 +122,11 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
             <MenuItem onClick={() => handleMenuItemClick('Palettes')}>Palettes</MenuItem>
             <MenuItem onClick={() => handleMenuItemClick('Create')}>Create</MenuItem>
             <MenuItem onClick={() => handleMenuItemClick('Collection')}>Collection</MenuItem>
-            <MenuItem onClick={handleMenuClose}>About</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Instagram</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Terms of Service</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Privacy Policy</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Made by Gal Singh</MenuItem>
+            <MenuItem onClick={() =>handleMenuItemClick('About')}>About</MenuItem>
+            {/* <MenuItem onClick={handleMenuClose}>Instagram</MenuItem> */}
+            <MenuItem onClick={() =>handleMenuItemClick('Services')}>Terms of Service</MenuItem>
+            <MenuItem onClick={() =>handleMenuItemClick('Policy')}>Privacy Policy</MenuItem>
+            {/* <MenuItem onClick={handleMenuClose}>Made by Gal Singh</MenuItem> */}
           </Menu>
         </Toolbar>
       </AppBar>

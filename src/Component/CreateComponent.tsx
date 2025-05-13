@@ -129,7 +129,7 @@ const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
       )}
 
       <Box sx={{ mt: 5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <TagSelector placeholder='Add Tags' width='480px'/>
+        <TagSelector placeholder='Add Tags' width='550px'/>
       </Box>
 
       {hasPickedColor && (

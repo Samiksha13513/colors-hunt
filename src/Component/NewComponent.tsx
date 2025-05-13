@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Tooltip,
   Typography,
   Skeleton,
@@ -47,7 +46,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
     fetchPalettes();
   }, [refreshTrigger]);
 
-  const handleSubmit = async (selectedPalette: any) => {
+  async (selectedPalette: any) => {
     const formattedData = {
       color1: selectedPalette.colors[0],
       color2: selectedPalette.colors[1],
@@ -64,7 +63,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
       alert("Failed to save. Check console for details.");
     } else {
       alert("Palette saved!");
-      onLike?.(); // ✅ Trigger tongue animation
+      onLike?.(); 
     }
   };
 
@@ -113,7 +112,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
                 <Typography variant="caption" color="text.secondary">
                   {formatTimeAgo(palette.created_at)}
                 </Typography>
-                <Button
+                {/* <Button
                   onClick={() => handleSubmit(palette)}
                   variant="outlined"
                   size="small"
@@ -125,7 +124,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
                   }}
                 >
                   Publish
-                </Button>
+                </Button> */}
               </Box>
             </Box>
           ))}

@@ -30,8 +30,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
     { label: 'Random', icon: <AllInclusiveIcon /> },
     { label: 'Collection', icon: <FavoriteBorderIcon /> },
   
-    { label: 'Pastel' },
-    { label: 'Vintage' },
+    // { label: 'Pastel' },
+    // { label: 'Vintage' },
     { label: 'Retro' },
     { label: 'Neon' },
     { label: 'Gold' },
