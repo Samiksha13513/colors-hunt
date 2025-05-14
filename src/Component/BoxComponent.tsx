@@ -1,4 +1,3 @@
-// BoxComponent.tsx
 import React, { useEffect, useState } from 'react';
 import {
   Box,
@@ -6,6 +5,8 @@ import {
   Typography,
   Tooltip,
   Skeleton,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -33,13 +34,9 @@ const formatTimeAgo = (timestamp: string) => {
   const diffInDays = Math.floor(diffInHours / 24);
   const diffInWeeks = Math.floor(diffInDays / 7);
 
-  if (diffInWeeks >= 1) {
-    return `${diffInWeeks} week${diffInWeeks > 1 ? 's' : ''} ago`;
-  } else if (diffInDays >= 1) {
-    return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-  } else {
-    return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
-  }
+  if (diffInWeeks >= 1) return `${diffInWeeks} week${diffInWeeks > 1 ? 's' : ''} ago`;
+  if (diffInDays >= 1) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+  return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
 };
 
 interface BoxComponentProps {
@@ -52,16 +49,20 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const { colorname } = useParams();
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
   const project = import.meta.env.VITE_SUPABASE_PROJECT_URL;
   const key = import.meta.env.VITE_SUPABASE_API_KEY;
   const supabase = createClient(project, key);
 
   useEffect(() => {
     const fetchColors = async () => {
-      if (colorname === 'pastel' || colorname === 'vintage' || colorname === 'random') {
+      if (['pastel', 'vintage', 'random'].includes(colorname ?? '')) {
         const randomData = Array.from({ length: 8 }, () => ({
           id: Math.random().toString(36).substring(2),
-          colors: Array.from({ length: 4 }, () => generateColor(colorname)),
+          colors: Array.from({ length: 4 }, () => generateColor(colorname!)),
           likes: Math.floor(Math.random() * 100),
           createdAt: new Date().toISOString(),
         }));
@@ -109,16 +110,29 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
       )
     );
     setLiked(prev => ({ ...prev, [index]: !prev[index] }));
+    onLike();
+  };
 
-    onLike(); // Trigger tongue shake
+  const getBoxWidth = () => {
+    if (isMobile) return 'calc(50% - 8px)';     
+    if (isTablet) return 'calc(33.33% - 12px)';  
+    return '190px';                          
   };
 
   return (
-    <Box sx={{ p: 3, display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+    <Box
+      sx={{
+        p: 3,
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 2, 
+        justifyContent: 'flex-start',
+      }}
+    >
       {loading
         ? [...Array(6)].map((_, index) => (
-            <Box key={index} sx={{ width: 200 }}>
-              <Skeleton variant="rectangular" height={200} />
+            <Box key={index} sx={{ width: getBoxWidth(), height: 220 }}>
+              <Skeleton variant="rectangular" height={160} />
               <Skeleton width="60%" sx={{ mt: 1 }} />
             </Box>
           ))
@@ -126,19 +140,23 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
             <Box
               key={index}
               sx={{
-                width: 200,
+                width: getBoxWidth(),
+                height: 220,
                 borderRadius: 3,
                 overflow: 'hidden',
-                boxShadow: 0,
                 backgroundColor: '#fff',
+               
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
               }}
             >
               <Box sx={{ borderRadius: 4, overflow: 'hidden' }}>
-                {palette.colors.map((color: any, idx: any) => (
+                {palette.colors.map((color: string, idx: number) => (
                   <Tooltip title={color} arrow key={idx}>
                     <Box
                       sx={{
-                        height: 50,
+                        height: 40,
                         backgroundColor: `${color}99`,
                         color: 'white',
                       }}
@@ -146,6 +164,7 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
                   </Tooltip>
                 ))}
               </Box>
+
               <Box
                 sx={{
                   display: 'flex',
@@ -153,6 +172,7 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
                   alignItems: 'center',
                   p: 1.5,
                   px: 2,
+          
                 }}
               >
                 <Button

@@ -3,23 +3,24 @@ import {
   AppBar,
   Box,
   Toolbar,
- 
   IconButton,
   Menu,
   MenuItem,
   keyframes,
+  useMediaQuery,
+  useTheme,
+  Typography,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import FaceLogo from '../assets/color-hunt-logo-face.svg';
 import TongueLogo from '../assets/color-hunt-logo-tongue.svg';
 
-import TagSelector from './TagSelector'; 
+import TagSelector from './TagSelector';
 
 interface HeaderProps {
   onSelectMenu: (menu: string) => void;
   isShaking: boolean;
-  
 }
 
 const shake = keyframes`
@@ -32,6 +33,9 @@ const shake = keyframes`
 
 const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -47,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, position: 'fixed', width: '900px', zIndex: 1000 }}>
+    <Box sx={{ flexGrow: 1, position: 'fixed', width: '100%', zIndex: 1000 }}>
       <AppBar
         elevation={0}
         sx={{
@@ -55,8 +59,9 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
           borderBottom: '1px solid rgb(209, 209, 209)',
         }}
       >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          {/* Logo and Title */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ position: 'relative', width: 60, height: 60, overflow: 'visible' }}>
               <Box
                 component="img"
@@ -86,24 +91,23 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
               />
             </Box>
 
-            <span
-              style={{
-                fontWeight: 600,
-                fontSize: '1.2rem',
-                color: '#333',
-                width: '102px',
-              }}
-              className="mobileHide"
-            >
-              Color Hunt
-            </span>
-
-        
-            <Box sx={{ ml: 2,  }}>
-              <TagSelector  placeholder='Search Palettes' width='1000px'/>
-            </Box>
+            {!isMobile && (
+              <Typography
+                sx={{ fontWeight: 600, fontSize: '1.2rem', color: '#333', ml: 1 }}
+              >
+                Color Hunt
+              </Typography>
+            )}
           </Box>
 
+          {/* Search */}
+          {!isMobile && (
+            <Box sx={{ flexGrow: 1, ml: 3 }}>
+              <TagSelector placeholder="Search Palettes" width="100%" />
+            </Box>
+          )}
+
+          {/* Menu Button */}
           <IconButton
             edge="end"
             onClick={handleMenuOpen}
@@ -112,6 +116,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
             <MoreVertIcon />
           </IconButton>
 
+          {/* Dropdown Menu */}
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -122,11 +127,9 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
             <MenuItem onClick={() => handleMenuItemClick('Palettes')}>Palettes</MenuItem>
             <MenuItem onClick={() => handleMenuItemClick('Create')}>Create</MenuItem>
             <MenuItem onClick={() => handleMenuItemClick('Collection')}>Collection</MenuItem>
-            <MenuItem onClick={() =>handleMenuItemClick('About')}>About</MenuItem>
-            {/* <MenuItem onClick={handleMenuClose}>Instagram</MenuItem> */}
-            <MenuItem onClick={() =>handleMenuItemClick('Services')}>Terms of Service</MenuItem>
-            <MenuItem onClick={() =>handleMenuItemClick('Policy')}>Privacy Policy</MenuItem>
-            {/* <MenuItem onClick={handleMenuClose}>Made by Gal Singh</MenuItem> */}
+            <MenuItem onClick={() => handleMenuItemClick('About')}>About</MenuItem>
+            <MenuItem onClick={() => handleMenuItemClick('Services')}>Terms of Service</MenuItem>
+            <MenuItem onClick={() => handleMenuItemClick('Policy')}>Privacy Policy</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>

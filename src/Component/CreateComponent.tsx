@@ -5,18 +5,21 @@ import {
   Button,
   styled,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { supabase } from '../SupabaseConfig';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-import TagSelector from '../Component/TagSelector'; 
+import TagSelector from '../Component/TagSelector';
 
 interface CreatePaletteProps {
   onPaletteAdded?: () => void;
 }
 
-const StyledPaletteCard = styled(Box)({
-  width: 400,
+const StyledPaletteCard = styled(Box)(({ theme }) => ({
+  width: '100%',
+  maxWidth: 400,
   height: 400,
   display: 'flex',
   flexDirection: 'column',
@@ -29,13 +32,24 @@ const StyledPaletteCard = styled(Box)({
     transform: 'translateY(-4px)',
     boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
   },
-});
+  [theme.breakpoints.down('sm')]: {
+    height: 320,
+  },
+}));
 
 const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
-  const [sectionColors, setSectionColors] = useState(['#bbbbbb', '#cccccc', '#dddddd', '#eeeeee']);
-  const [hasPickedColor, setHasPickedColor] = useState(false); // ✅ New state to track user action
+  const [sectionColors, setSectionColors] = useState([
+    '#bbbbbb',
+    '#cccccc',
+    '#dddddd',
+    '#eeeeee',
+  ]);
+  const [hasPickedColor, setHasPickedColor] = useState(false);
 
   const handleClick = (index: number) => {
     setActiveColorIndex(index);
@@ -52,7 +66,7 @@ const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
       const updatedColors = [...sectionColors];
       updatedColors[activeColorIndex] = newColor.hex;
       setSectionColors(updatedColors);
-      setHasPickedColor(true); 
+      setHasPickedColor(true);
     }
   };
 
@@ -71,27 +85,41 @@ const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
       alert('Failed to save. Check console for details.');
     } else {
       alert('Palette saved!');
-      if (onPaletteAdded) onPaletteAdded();
+      onPaletteAdded?.();
     }
   };
 
   return (
-    <Box sx={{ margin: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    <Typography 
-  variant="h1" 
-  sx={{ 
-    mb: 1,  
-    fontSize: '18px',
-    fontWeight: 'bold',
-    fontFamily: 'Inter, sans-serif',
-    margin: 0,
-    lineHeight: '140%' 
-  }}
->
-  New Color Palette
-</Typography>
+    <Box
+      sx={{
+        margin: '20px auto',
+        px: 2,
+        maxWidth: 500,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <Typography
+        variant="h1"
+        sx={{
+          mb: 1,
+          fontSize: '18px',
+          fontWeight: 'bold',
+          fontFamily: 'Inter, sans-serif',
+          lineHeight: '140%',
+          textAlign: 'center',
+        }}
+      >
+        New Color Palette
+      </Typography>
 
-      <Typography variant="body2" sx={{ mb: 3 }}>Create a new palette and contribute to Color Hunt’s collection</Typography>
+      <Typography
+        variant="body2"
+        sx={{ mb: 3, textAlign: 'center' }}
+      >
+        Create a new palette and contribute to Color Hunt’s collection
+      </Typography>
 
       <StyledPaletteCard>
         {sectionColors.map((color, index) => (
@@ -128,32 +156,43 @@ const CreatePalette: React.FC<CreatePaletteProps> = ({ onPaletteAdded }) => {
         </Box>
       )}
 
-      <Box sx={{ mt: 5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <TagSelector placeholder='Add Tags' width='550px'/>
+      <Box
+        sx={{
+          mt: 5,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+        <TagSelector
+          placeholder="Add Tags"
+          width={isMobile ? '100%' : '550px'}
+        />
       </Box>
 
       {hasPickedColor && (
-      <Button
-      variant="outlined"
-      onClick={handleSubmit}
-      startIcon={<ArrowForwardIcon />}
-      sx={{
-        marginTop: 3,
-        borderRadius: '8px',
-        backgroundColor: 'transparent',
-        color: '#797a7a',
-        borderColor: '#ccc', 
-        px: 4 ,
-        py: 1.5,
-        fontWeight: 'bold',
-        '&:hover': {
-          borderColor: '#bbb',
-          color: '#bbb',
-        },
-      }}
-    >
-      Submit Palette
-    </Button>
+        <Button
+          variant="outlined"
+          onClick={handleSubmit}
+          startIcon={<ArrowForwardIcon />}
+          sx={{
+            mt: 3,
+            borderRadius: '8px',
+            backgroundColor: 'transparent',
+            color: '#797a7a',
+            borderColor: '#ccc',
+            px: 4,
+            py: 1.5,
+            fontWeight: 'bold',
+            '&:hover': {
+              borderColor: '#bbb',
+              color: '#bbb',
+            },
+          }}
+        >
+          Submit Palette
+        </Button>
       )}
     </Box>
   );
