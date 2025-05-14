@@ -5,14 +5,7 @@ import {
   Drawer,
   List,
   ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  ClickAwayListener,
-  IconButton,
-  useMediaQuery,
-  useTheme,
+ListItemButton,ListItemIcon,ListItemText, Divider,ClickAwayListener,IconButton,useMediaQuery,useTheme,
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
@@ -21,7 +14,7 @@ import WhatshotIcon from '@mui/icons-material/Whatshot';
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-const drawerWidth = 175;
+const drawerWidth = 200;
 
 interface SidebarProps {
   onMenuClick: (menu: string) => void;
@@ -63,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
         overflowY: 'auto',
         scrollbarWidth: 'none',
         '&::-webkit-scrollbar': { display: 'none' },
-        mt: isMobile ? 0 : '50px',
+        // mt: isMobile ? 0 : '80px',
       }}
     >
       <ClickAwayListener onClickAway={() => setOpenDropdown(false)}>
@@ -178,7 +171,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
         </IconButton>
       )}
 
-      {/* Mobile Drawer */}
       {isMobile ? (
         <Drawer
           variant="temporary"
@@ -189,14 +181,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
             [`& .MuiDrawer-paper`]: {
               width: drawerWidth,
               boxSizing: 'border-box',
-              top: 0,
+              // top: 0,
+              marginTop: '50px',
             },
           }}
         >
           {drawerContent}
         </Drawer>
       ) : (
-        // Desktop Drawer
+     
         <Drawer
           variant="permanent"
           sx={{

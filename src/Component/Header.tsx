@@ -116,7 +116,6 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
             <MoreVertIcon />
           </IconButton>
 
-          {/* Dropdown Menu */}
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}

@@ -170,8 +170,7 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  p: 1.5,
-                  px: 2,
+                
           
                 }}
               >

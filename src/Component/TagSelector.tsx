@@ -95,8 +95,8 @@ const TagSelector = ({ placeholder, width }: { placeholder?: string; width?: str
         },
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', overflow: 'hidden',  }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', px: 1,}}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', px: 0.5, flexWrap: 'wrap' }}>
           {selectedTags.map((tag) => (
             <Chip
               key={tag.name}
