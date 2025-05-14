@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
- 
   Tooltip,
   Typography,
   Skeleton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { supabase } from "../SupabaseConfig";
 
@@ -19,6 +20,9 @@ const NewComponent: React.FC<NewComponentProps> = ({
 }) => {
   const [palettes, setPalettes] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Adjust breakpoint as needed
+  const gridColumnCount = isMobile ? 2 : 3;
 
   const fetchPalettes = async () => {
     setLoading(true);
@@ -47,7 +51,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
     fetchPalettes();
   }, [refreshTrigger]);
 
-  async (selectedPalette: any) => {
+  const handleSavePalette = async (selectedPalette: any) => {
     const formattedData = {
       color1: selectedPalette.colors[0],
       color2: selectedPalette.colors[1],
@@ -69,11 +73,18 @@ const NewComponent: React.FC<NewComponentProps> = ({
   };
 
   return (
-    <Box sx={{ p: 3, display: "flex", flexWrap: "wrap", gap: 3 }}>
+    <Box
+      sx={{
+        p: 3,
+        display: "grid",
+        gridTemplateColumns: `repeat(auto-fill, minmax(150px, 1fr))`, // Basic responsive grid
+        gap: 2,
+      }}
+    >
       {loading
         ? [...Array(6)].map((_, index) => (
-            <Box key={index} sx={{ width: 200 }}>
-              <Skeleton variant="rectangular" height={200} />
+            <Box key={index}>
+              <Skeleton variant="rectangular" height={150} />
               <Skeleton width="60%" sx={{ mt: 1 }} />
             </Box>
           ))
@@ -81,7 +92,6 @@ const NewComponent: React.FC<NewComponentProps> = ({
             <Box
               key={index}
               sx={{
-                width: 200,
                 borderRadius: 3,
                 overflow: "hidden",
                 boxShadow: 0,
@@ -93,7 +103,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
                   <Tooltip title={color} arrow key={idx}>
                     <Box
                       sx={{
-                        height: 50,
+                        height: 35,
                         backgroundColor: `${color}99`,
                         color: "white",
                       }}
@@ -113,7 +123,6 @@ const NewComponent: React.FC<NewComponentProps> = ({
                 <Typography variant="caption" color="text.secondary">
                   {formatTimeAgo(palette.created_at)}
                 </Typography>
-                
               </Box>
             </Box>
           ))}

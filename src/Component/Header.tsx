@@ -60,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectMenu, isShaking }) => {
         }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-          {/* Logo and Title */}
+        
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ position: 'relative', width: 60, height: 60, overflow: 'visible' }}>
               <Box
