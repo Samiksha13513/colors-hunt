@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 const generateColor = (type: string): string => {
@@ -48,6 +48,7 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
   const [liked, setLiked] = useState<{ [key: number]: boolean }>({});
   const [loading, setLoading] = useState<boolean>(true);
   const { colorname } = useParams();
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -114,9 +115,9 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
   };
 
   const getBoxWidth = () => {
-    if (isMobile) return 'calc(50% - 8px)';     
-    if (isTablet) return 'calc(33.33% - 12px)';  
-    return '190px';                          
+    if (isMobile) return 'calc(50% - 8px)';
+    if (isTablet) return 'calc(33.33% - 12px)';
+    return '190px';
   };
 
   return (
@@ -125,7 +126,7 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
         p: 3,
         display: 'flex',
         flexWrap: 'wrap',
-        gap: 2, 
+        gap: 2,
         justifyContent: 'flex-start',
       }}
     >
@@ -140,16 +141,17 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
             <Box
               key={index}
               sx={{
+                cursor: 'pointer',
                 width: getBoxWidth(),
                 height: 220,
                 borderRadius: 3,
                 overflow: 'hidden',
                 backgroundColor: '#fff',
-               
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}
+              onClick={() => navigate(`/palette/${palette.id}`)}
             >
               <Box sx={{ borderRadius: 4, overflow: 'hidden' }}>
                 {palette.colors.map((color: string, idx: number) => (
@@ -158,7 +160,6 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
                       sx={{
                         height: 40,
                         backgroundColor: `${color}99`,
-                        color: 'white',
                       }}
                     />
                   </Tooltip>
@@ -170,12 +171,14 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                
-          
+                  padding: '0 8px 4px',
                 }}
               >
                 <Button
-                  onClick={() => handleLikeToggle(index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLikeToggle(index);
+                  }}
                   size="small"
                   sx={{
                     textTransform: 'none',
@@ -183,9 +186,7 @@ const BoxComponent: React.FC<BoxComponentProps> = ({ onLike }) => {
                     fontWeight: 500,
                     border: '1px solid rgb(223, 222, 222)',
                   }}
-                  startIcon={
-                    liked[index] ? <FavoriteIcon /> : <FavoriteBorderIcon />
-                  }
+                  startIcon={liked[index] ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                 >
                   {palette.likes}
                 </Button>

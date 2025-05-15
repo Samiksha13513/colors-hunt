@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Header from './Component/Header';
 import Sidebar from './Component/Sidebar';
@@ -10,6 +16,7 @@ import NewComponent from './Component/NewComponent';
 import About from './Component/About';
 import Services from './Component/Services';
 import Policy from './Component/Policy';
+import ColorDetailPage from './ColorDetailPage';
 
 const MainLayout: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState<number>(0);
@@ -39,16 +46,17 @@ const MainLayout: React.FC = () => {
 
       <Box sx={{ flexGrow: 1, paddingTop: '64px' }}>
         <Routes>
-        <Route path="/new" element={<NewComponent onLike={triggerShake} refreshTrigger={refreshKey} />} />
+          <Route path="/new" element={<NewComponent onLike={triggerShake} refreshTrigger={refreshKey} />} />
           <Route path="/popular" element={<BoxComponent onLike={triggerShake} />} />
           <Route path="/random" element={<BoxComponent onLike={triggerShake} />} />
           <Route path="/:colorname" element={<BoxComponent onLike={triggerShake} />} />
           <Route path="/palettes" element={<BoxComponent onLike={triggerShake} />} />
           <Route path="/collection" element={<CollectionComponent refreshTrigger={refreshKey} />} />
           <Route path="/create" element={<CreateComponent onPaletteAdded={handlePaletteAdded} />} />
-          <Route path="/about" element={< About />} />
-          <Route path="/services" element={< Services />} />
-          <Route path="/policy" element={< Policy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/policy" element={<Policy />} />
+          <Route path="/palette/:id" element={<ColorDetailPage />} /> {/* Detail Page Route */}
           <Route path="*" element={<BoxComponent onLike={triggerShake} />} />
         </Routes>
       </Box>
