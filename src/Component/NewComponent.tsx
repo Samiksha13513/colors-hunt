@@ -22,7 +22,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Adjust breakpoint as needed
-  const gridColumnCount = isMobile ? 2 : 3;
+  isMobile ? 2 : 3;
 
   const fetchPalettes = async () => {
     setLoading(true);
@@ -51,7 +51,7 @@ const NewComponent: React.FC<NewComponentProps> = ({
     fetchPalettes();
   }, [refreshTrigger]);
 
-  const handleSavePalette = async (selectedPalette: any) => {
+   async (selectedPalette: any) => {
     const formattedData = {
       color1: selectedPalette.colors[0],
       color2: selectedPalette.colors[1],

@@ -5,11 +5,10 @@ import {
   Typography,
   Tooltip,
   CircularProgress,
-  Button,
+
 
 } from '@mui/material';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+
 import { createClient } from '@supabase/supabase-js';
 
 const hexToRgb = (hex: string): string => {
@@ -21,27 +20,14 @@ const hexToRgb = (hex: string): string => {
     : 'Invalid color';
 };
 
-const formatTimeAgo = (timestamp: string): string => {
-  const created = new Date(timestamp);
-  const now = new Date();
-  const ms = now.getTime() - created.getTime();
 
-  const hours = Math.floor(ms / (1000 * 60 * 60));
-  const days = Math.floor(hours / 24);
-  const weeks = Math.floor(days / 7);
 
-  if (weeks >= 1) return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
-  if (days >= 1) return `${days} day${days > 1 ? 's' : ''} ago`;
-  return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-};
-
-// ... (keep all imports and utility functions as they are)
 
 const ColorDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [palette, setPalette] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(false);
+ 
 
   const project = import.meta.env.VITE_SUPABASE_PROJECT_URL;
   const key = import.meta.env.VITE_SUPABASE_API_KEY;
@@ -75,13 +61,6 @@ const ColorDetailPage: React.FC = () => {
     fetchPalette();
   }, [id]);
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setPalette((prev: any) => ({
-      ...prev,
-      likes: liked ? prev.likes - 1 : prev.likes + 1,
-    }));
-  };
 
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
   if (!palette) return <Typography>No data found.</Typography>;
@@ -124,42 +103,7 @@ const ColorDetailPage: React.FC = () => {
         ))}
       </Box>
 
-      {/* Responsive Like Button and Time Section */}
-      {/* <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: { xs: '100%', sm: 340 },
-          mb: 2,
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: { xs: 1, sm: 0 },
-        }}
-      >
-        <Button
-          onClick={handleLike}
-          size="small"
-          sx={{
-            textTransform: 'none',
-            color: 'black',
-            fontWeight: 500,
-            border: '1px solid rgb(223, 222, 222)',
-          }}
-          startIcon={liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-        >
-          {palette.likes}
-        </Button>
 
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ textAlign: { xs: 'center', sm: 'right' } }}
-        >
-          {formatTimeAgo(palette.createdat)}
-        </Typography>
-      </Box> */}
-
-      {/* Color Info Section */}
       <Box
         sx={{
           width: { xs: '100%', sm: 509 },
