@@ -28,7 +28,7 @@ const ColorDetailPage: React.FC = () => {
   const [palette, setPalette] = useState<any>(null);
   const [loading, setLoading] = useState(true);
  
-
+const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const project = import.meta.env.VITE_SUPABASE_PROJECT_URL;
   const key = import.meta.env.VITE_SUPABASE_API_KEY;
   const supabase = createClient(project, key);
@@ -88,18 +88,28 @@ const ColorDetailPage: React.FC = () => {
         }}
       >
         {palette.colors.map((color: string, index: number) => (
-          <Tooltip title={color} arrow key={index}>
-            <Box
-              sx={{
-                flex: 1,
-                backgroundColor: color,
-                transition: 'opacity 0.3s',
-                '&:hover': {
-                  opacity: 0.9,
-                },
-              }}
-            />
-          </Tooltip>
+  <Tooltip
+    key={index}
+    title={copiedIndex === index ? 'Copied!' : color}
+    arrow
+    onClose={() => setCopiedIndex(null)}
+  >
+    <Box
+      onClick={() => {
+        navigator.clipboard.writeText(color);
+        setCopiedIndex(index);
+      }}
+      sx={{
+        flex: 1,
+        backgroundColor: color,
+        transition: 'opacity 0.3s',
+        cursor: 'pointer',
+        '&:hover': {
+          opacity: 0.9,
+        },
+      }}
+    />
+  </Tooltip>
         ))}
       </Box>
 
@@ -157,4 +167,3 @@ const ColorDetailPage: React.FC = () => {
 };
 
 export default ColorDetailPage;
-
